@@ -1,8 +1,24 @@
-﻿/*! jst - v0.0.1 - 2017-05-30 - (MIT) */
+/*! jst - v0.0.1 - 2017-05-30 - (MIT) */
 var tree = {
     item: function (li, a) {
         this.li = li;
         this.a = a;
+        this.clear = function () {
+            this.li.getElementsByTagName('ul')[0].innerHTML = '';
+        };
+        this.parent = function () {
+            var ul = this.li.parentElement;
+            var li = null, ni = null, a = null;
+            if (ul.nodeName == 'UL') {
+                li = ul.parentElement;
+                var a = li.getElementsByTagName('a')[0];
+                if (li.nodeName == 'LI' && a.nodeName == 'A') {
+                    ni = new tree.item(li, a);
+                    console.log("FIND ITEM", ni);
+                }
+            }
+            return ni;
+        };
     },
     createItem: function (parent, text, icon, haschildren, onexpand, oncolapse, onclick) {
         var li = document.createElement('li');
@@ -25,7 +41,9 @@ var tree = {
         a.appendChild(textnode);
         var ul = document.createElement('ul');
         li.appendChild(ul);
-        parent.appendChild(li);
+        if (parent != null) {
+            parent.appendChild(li);
+        }
         var item = new this.item(li, a);
         img.onclick = function () {
             if (img.className == 'openChildNode') {
@@ -35,7 +53,7 @@ var tree = {
             } else {
                 img.className = 'openChildNode';
                 img.src = "jqtree/plus.gif";
-                li.getElementsByTagName('ul')[0].innerHTML = '';
+                item.li.getElementsByTagName('ul')[0].innerHTML = '';
                 oncolapse(item);
             }
         };
